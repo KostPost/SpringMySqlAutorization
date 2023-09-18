@@ -10,6 +10,7 @@ import com.kostpost.account.Account;
 import com.kostpost.account.AccountRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 @SpringBootApplication
@@ -78,31 +79,42 @@ public class AuthorizationApplication {
 				case 3 -> {
 
 					Scanner AskAccountName = new Scanner(System.in);
-					String accName= null;
+					String AccName= null;
 
 					Scanner AskAccountPassword = new Scanner(System.in);
-					String accPassword = null;
+					String TryAccPassword = null;
+
+					Account LoginAccount = new Account();
+
+					String TrueAccPassword = null;
 
 					do{
-						System.out.println("Enter account name");
-						accName = AskAccountName.next();
+						System.out.print("Enter account name:   ");
+						AccName = AskAccountName.next();
 
-						do{
-							System.out.print("Write account name:   ");
-							accName = AskAccName.next();
+						LoginAccount = controller.findByAccName(AccName);
 
-							checkAccName = controller.findByAccName(accName);
+						if(LoginAccount != null){
+							TrueAccPassword = LoginAccount.getAccPassword();
+						}else {
+							System.out.println("There is no account with this username");
+							AccName = null;
+						}
 
-							if(checkAccName != null){
-								System.out.println("this name already exist");
-								accName = null;
-							}else {
-								CreateAccount.setAccName(accName);
-							}
+					}while(AccName == null);
 
-						}while(accName == null);
+					do{
+						System.out.print("Enter password for account - " + AccName + " - :\t");
+						TryAccPassword = AskAccountPassword.next();
 
-					}while(accName == null);
+						if(Objects.equals(TryAccPassword, TrueAccPassword)){
+							System.out.print("\nyou have successfully logged in");
+						}else{
+							System.out.println("Wrong password");
+							TryAccPassword = null;
+						}
+					}while(TryAccPassword == null);
+					controller.AccountPrint(LoginAccount);
 				}
 
 				case 4 -> {

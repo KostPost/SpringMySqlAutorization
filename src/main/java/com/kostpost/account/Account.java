@@ -20,6 +20,4 @@ public class Account {
     private String accName;
     @Column(name = "acc_password")
     private String accPassword;
-
-
 }
